@@ -10,9 +10,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ItemDetail> items = [];
   @override
   Widget build(BuildContext context) {
-    List<ItemDetail> items = [];
     return Scaffold(
         appBar: AppBar(
           title: const Text("Todo App"),
@@ -38,17 +38,57 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(onPressed: addItem));
+        floatingActionButton: FloatingActionButton(
+            onPressed: newItemAddView, child: const Icon(Icons.add)));
   }
 
-  void addItem() {
+  void newItemAddView() {
+    TextEditingController controller = TextEditingController();
     showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            child: const Center(
-              child: Column(
-                children: [Text("hello world")],
+          return Padding(
+            // padding: EdgeInsets.only(
+            //     bottom: MediaQuery.of(context).viewInsets.bottom),
+            padding: MediaQuery.of(context).viewInsets,
+            // in case the keyboard pops up when typing input
+            child: SizedBox(
+              height: 250,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Column(
+                    children: [
+                      TextField(
+                        keyboardType: TextInputType.text,
+                        controller: controller,
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            ),
+                            hintText: "go on a field trip"),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (controller.text.toString() != "") {
+                            ItemDetail temp = ItemDetail();
+                            temp.text = controller.text.toString();
+                            temp.itemId = 1;
+                            setState(() {
+                              items.add(temp);
+                            });
+                            Navigator.pop(context);
+                          }
+                        },
+                        icon: const Icon(Icons.check_circle),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           );
